@@ -12,6 +12,7 @@ import numpy as np
 from scintillator_display.display.impl_compatibility.camera_shader_controls import CameraShaderControls
 
 from scintillator_display.display.impl_b.scintillator_blocks import ScintillatorStructure
+from scintillator_display.display.impl_compatibility.scintillator_blocks_build import ScintillatorBlocks
 
 from scintillator_display.display.impl_compatibility.vao_vbo import create_vao, update_vbo, draw_vao
 
@@ -42,7 +43,8 @@ class Window(MathDisplayValues):
                             hull_colour=[0.5, 0, 0.5], hull_opacity=0.8,
                             store_normals=True,
                             mode=init_mode)
-        self.scintillator_structure = ScintillatorStructure(self.data_manager)
+        #self.scintillator_structure = ScintillatorStructure(self.data_manager)
+        self.scintillator_structure = ScintillatorBlocks(self.data_manager)
         self.xyz_axes = Axes(l=250)
 
 
@@ -158,10 +160,10 @@ class Window(MathDisplayValues):
         self.data_manager.draw_active_hulls(self.data_manager.data, self.data_manager.impl_data_is_checked)
 
 
-        self.scintillator_structure.reset_scintillator_colour()  
+        self.scintillator_structure.reset_to_initial_colour()  
         if self.show_colour:      
             if self.pt_selected != None:
-                self.scintillator_structure.recolour_for_point(self.pt_selected)
+                self.scintillator_structure.light_scintillators_for_hit(self.pt_selected)
         self.scintillator_structure.renew_vbo()
         self.scintillator_structure.draw_scintillator_structure()
 

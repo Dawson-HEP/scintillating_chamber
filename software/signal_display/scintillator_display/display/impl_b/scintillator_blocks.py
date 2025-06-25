@@ -10,6 +10,8 @@ from scintillator_display.compat.universal_values import MathDisplayValues
 
 from scintillator_display.display.impl_compatibility.data_manager import Data
 
+from scintillator_display.display.impl_compatibility.scintillator_blocks_build import ScintillatorBlocks
+
 
 class ScintillatorStructure(MathDisplayValues):
     def __init__(self, data_manager:Data):
@@ -28,6 +30,8 @@ class ScintillatorStructure(MathDisplayValues):
                         in_between_space =               self.SPACE_BETWEEN_STRUCTURES, # mm
                         )
         self.make_vao()
+
+        k = ScintillatorBlocks(data_manager=data_manager)
 
 
     def make_prism_triangles(self, low_x, high_x, low_y, high_y, low_z, high_z):      

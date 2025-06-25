@@ -3,10 +3,6 @@ from datetime import datetime
 
 import scintillator_display.compat.glfw as glfw
 
-import scintillator_display.compat.imgui as imgui
-
-import pandas as pd
-
 import numpy as np
 
 from scintillator_display.display.impl_compatibility.data_manager import Data
