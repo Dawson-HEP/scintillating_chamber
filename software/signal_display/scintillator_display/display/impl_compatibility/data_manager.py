@@ -364,29 +364,18 @@ class Data(MathDisplayValues):
         return scaled_hull_bounds
     
 
-    def make_points_from_high_low(self, xl, xh, yl, yh, zl, zh, c=None, a=None, is_restructured=False):
-        if not is_restructured:
-            points = np.array([
-                np.array([xl, yl, zl]), # base_point + (0,    0,    0)    # BFL
-                np.array([xh, yl, zl]), # base_point + (xlen, 0,    0)    # BFR
-                np.array([xl, yh, zl]), # base_point + (0,    ylen, 0)    # BBL
-                np.array([xh, yh, zl]), # base_point + (xlen, ylen, 0)    # BBR
-                np.array([xl, yl, zh]), # base_point + (0,    0,    zlen) # TFL
-                np.array([xh, yl, zh]), # base_point + (xlen, 0,    zlen) # TFR
-                np.array([xl, yh, zh]), # base_point + (0,    ylen, zlen) # TBL
-                np.array([xh, yh, zh]), # base_point + (xlen, ylen, zlen) # TBR
-            ])
-        elif is_restructured:
-            points = np.array([
-                np.array([xl, yl, zl, *c, a, xl, yl, zl]), # base_point + (0,    0,    0)    # BFL
-                np.array([xh, yl, zl, *c, a, xh, yl, zl]), # base_point + (xlen, 0,    0)    # BFR
-                np.array([xl, yh, zl, *c, a, xl, yh, zl]), # base_point + (0,    ylen, 0)    # BBL
-                np.array([xh, yh, zl, *c, a, xh, yh, zl]), # base_point + (xlen, ylen, 0)    # BBR
-                np.array([xl, yl, zh, *c, a, xl, yl, zh]), # base_point + (0,    0,    zlen) # TFL
-                np.array([xh, yl, zh, *c, a, xh, yl, zh]), # base_point + (xlen, 0,    zlen) # TFR
-                np.array([xl, yh, zh, *c, a, xl, yh, zh]), # base_point + (0,    ylen, zlen) # TBL
-                np.array([xh, yh, zh, *c, a, xh, yh, zh]), # base_point + (xlen, ylen, zlen) # TBR
-            ])
+    def make_points_from_high_low(self, xl, xh, yl, yh, zl, zh):
+        points = np.array([
+            np.array([xl, yl, zl]), # base_point + (0,    0,    0)    # BFL
+            np.array([xh, yl, zl]), # base_point + (xlen, 0,    0)    # BFR
+            np.array([xl, yh, zl]), # base_point + (0,    ylen, 0)    # BBL
+            np.array([xh, yh, zl]), # base_point + (xlen, ylen, 0)    # BBR
+            np.array([xl, yl, zh]), # base_point + (0,    0,    zlen) # TFL
+            np.array([xh, yl, zh]), # base_point + (xlen, 0,    zlen) # TFR
+            np.array([xl, yh, zh]), # base_point + (0,    ylen, zlen) # TBL
+            np.array([xh, yh, zh]), # base_point + (xlen, ylen, zlen) # TBR
+        ])
+        
         return points
     
 
