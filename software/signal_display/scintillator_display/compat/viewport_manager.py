@@ -201,3 +201,14 @@ class Viewport:
 
         self.x_ratio = None
         self.y_ratio = None
+
+        self.mouse_button_callback = self.null
+        self.cursor_pos_callback = self.null
+        self.scroll_callback = self.null
+        self.window_size_callback = self.null
+        self.char_callback = self.null
+        self.key_callback = self.null
+        self.on_render = self.null
+
+    def null(self, *args):
+        pass

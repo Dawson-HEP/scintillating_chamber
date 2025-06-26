@@ -76,9 +76,6 @@ class App(MathDisplayValues):
         vp_a.scroll_callback = self.scroll_callback
         vp_a.window_size_callback = self.resize_callback
 
-        vp_a.char_callback = self.null
-        vp_a.key_callback = self.null
-
         vp_a.x_ratio, vp_a.y_ratio = self.x_ratio, self.y_ratio
         vp_a.on_render = self.on_render_frame
 

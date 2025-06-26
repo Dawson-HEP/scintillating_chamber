@@ -375,7 +375,6 @@ class Data(MathDisplayValues):
             np.array([xl, yh, zh]), # base_point + (0,    ylen, zlen) # TBL
             np.array([xh, yh, zh]), # base_point + (xlen, ylen, zlen) # TBR
         ])
-        
         return points
     
 

@@ -31,6 +31,10 @@ class ScintillatorBlocks(MathDisplayValues):
                         alpha            =               self.alpha,
                         in_between_space =               self.SPACE_BETWEEN_STRUCTURES, # mm
                         )
+        
+        
+
+        self.make_vao()
 
 
     def build_structure(self,
@@ -52,80 +56,36 @@ class ScintillatorBlocks(MathDisplayValues):
 
         sipm_rods = []
 
-        # top half
         for double in range(num_doubles):
             num_rods = 2**(double+1)
-            for layer in range(2):
-                
-                absolute_z_offset = (z_i + middle_offset +
-                                                    (width_per_one+dead_space)*(2*double+layer))
-                
-                # base_x = base_y = 0, so the choice is irrelevant
-                basepoints = np.linspace(base_x, base_x+square_side_len, num_rods, endpoint=False)
-                dist_bpoints = basepoints[1]-basepoints[0]
+            for xy in range(2):
+                for tb in range(2):
 
-                this_sipm_rod = []
+                    absolute_z = (z_i + middle_offset + (width_per_one+dead_space)*(2*double+xy))
 
-                for rod, s in enumerate(basepoints):
-                    
-                    
-                    for tb in range(2):
-                        this_sipm.append(
+                    basepoints = np.linspace(x_i, x_i+square_side_len, num_rods, endpoint=False)
+                    dist_bpoints = basepoints[1]-basepoints[0]
+
+                    this_sipm_rod = []
+                    for rod, s in enumerate(basepoints):
+                        this_sipm_rod.append(
                             self.make_prism_triangles(
                                 *self.make_points_from_high_low(
-                                    xl = s if tb^layer else x_i,
-                                    xh = s + dist_bpoints if tb^layer else square_side_len,
-                                    yl = square_side_len - s - dist_bpoints if not tb^layer else square_side_len,
-                                    yh = square_side_len - s if not tb^layer else y_i,
-                                    zl = (-1)**tb * (absolute_z_offset),
-                                    zh = (-1)**tb * absolute_z_offset + width_per_one),
+                                    xl = s if (not tb^xy) else x_i,
+                                    xh = s + dist_bpoints if (not tb^xy) else square_side_len,
+                                    yl = square_side_len - s - dist_bpoints if (tb^xy) else square_side_len,
+                                    yh = square_side_len - s if (tb^xy) else y_i,
+                                    zl = (-1)**tb * (absolute_z),
+                                    zh = (-1)**tb * (absolute_z + width_per_one),
                                     c  = c2 if rod%2 else c1,
                                     a  = alpha,
                                 ),
                                 show_top_bottom=True
                             )
                         )
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    prism = self.data_manager.make_prism_triangles(
-                        *self.data_manager.make_points_from_high_low(
-                            xl = s if not layer else x_i,
-                            xh = s + dist_bpoints if not layer else square_side_len,
-                            yl = square_side_len - s - dist_bpoints if layer else square_side_len,
-                            yh = square_side_len - s if layer else y_i,
-                            zl = absolute_z_offset,
-                            zh = absolute_z_offset + width_per_one,
-                            c  = c2 if rod%2 else c1,
-                            a  = alpha,
-                            is_restructured=True
-                        ),
-                        show_top_bottom=True
-                    )
-                    this_sipm_rod.append(prism)
+                    sipm_rods.append(np.array(this_sipm_rod[ ::2]))
+                    sipm_rods.append(np.array(this_sipm_rod[1::2]))
 
-                    prism = self.make_prism_triangles(
-                        *self.make_points_from_high_low(
-                            xl = s if layer else x_i,
-                            xh = s + dist_bpoints if layer else square_side_len,
-                            yl = square_side_len - s - dist_bpoints if not layer else square_side_len,
-                            yh = square_side_len - s if not layer else y_i,
-                            zl = -absolute_z_offset,
-                            zh = -absolute_z_offset - width_per_one,
-                            c  = c2 if rod%2 else c1,
-                            a  = alpha
-                        ),
-                        show_top_bottom=True
-                    )
-                    this_sipm_rod.append(prism)
-                sipm_rods.append(np.array(this_sipm_rod[::4]))
-                sipm_rods.append(np.array(this_sipm_rod[1::4]))
-                sipm_rods.append(np.array(this_sipm_rod[2::4]))
-                sipm_rods.append(np.array(this_sipm_rod[3::4]))
 
 
         '''
@@ -136,24 +96,15 @@ class ScintillatorBlocks(MathDisplayValues):
         [0, 1, 14, 15, 4, 5, 18, 19, 8, 9, 22, 23, 2, 3, 12, 13, 6, 7, 16, 17, 10, 11, 20, 21]
         '''
         
-        '''
-        idx_conversion = [0, 1, 14, 15, 4, 5, 18, 19,  8,  9, 22, 23,
-                          2, 3, 12, 13, 6, 7, 16, 17, 10, 11, 20, 21]
-        '''
+        idx_conversion = [0, 1, 6, 7, 8, 9, 14, 15, 16, 17, 22, 23,
+                          4, 5, 2, 3, 12, 13, 10, 11, 20, 21, 18, 19]
         
-        # new conversion GUESS
-        idx_conversion = [0, 1, 2, 3, 14, 15, 12, 13, 4, 5, 6, 7, 
-                          18, 19, 16, 17, 8, 9, 10, 11, 22, 23, 20, 22]
-
-
         sorted_sipm = []
         for idx in idx_conversion:
             sorted_sipm.append(sipm_rods[idx])
 
         self.data = sorted_sipm
 
-        self.make_vao()
-        
     def make_points_from_high_low(self, xl, xh, yl, yh, zl, zh, c, a):
         points = np.array([
             np.array([xl, yl, zl, *c, a, xl, yl, zl]), # base_point + (0,    0,    0)    # BFL
@@ -221,6 +172,9 @@ class ScintillatorBlocks(MathDisplayValues):
     def reset_to_initial_colour(self):
         for i, data in enumerate(self.data):
             self.data[i][:, :, 3:7] = [*(self.c2 if i%2 else self.c1), self.alpha]
+        
+        #self.data[12][:, :, 3:7]=[0, 0, 0, 1]
+
 
     
     def light_scintillators_for_hit(self, point):
@@ -229,7 +183,7 @@ class ScintillatorBlocks(MathDisplayValues):
         for i, binary_value in enumerate(binary):
             if binary_value:
                 self.data[i][:, :, 3:7] = yellow
-
+        
     def data_to_triangles_for_draw(self):
         triangles = []
         for sipm in self.data:

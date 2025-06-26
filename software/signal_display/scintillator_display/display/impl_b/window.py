@@ -68,11 +68,6 @@ class Window(MathDisplayValues):
 
         self.show_colour = False
 
-
-    def null(self, *args):
-        pass
-
-
     def viewport_shenanigans(self, vm):
         vp_b = vm.add_viewport(None, None)
 
@@ -80,9 +75,6 @@ class Window(MathDisplayValues):
         vp_b.cursor_pos_callback = self.cursor_pos_callbacks
         vp_b.scroll_callback = self.scroll_callbacks
         vp_b.window_size_callback = self.window_callbacks
-
-        vp_b.char_callback = self.null
-        vp_b.key_callback = self.null
 
         vp_b.x_ratio, vp_b.y_ratio = self.x_ratio, self.y_ratio
         vp_b.on_render = self.render_loop

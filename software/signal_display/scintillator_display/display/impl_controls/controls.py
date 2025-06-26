@@ -74,12 +74,6 @@ class Controls:
         vp_c.on_render = self.on_render
 
         vp_c.window_size_callback = self.window_size_callback
-        
-        vp_c.mouse_button_callback = self.null
-        vp_c.cursor_pos_callback = self.null
-        vp_c.scroll_callback = self.null
-        vp_c.char_callback = self.null
-        vp_c.key_callback = self.null
 
         vp_c.x_ratio, vp_c.y_ratio = self.x_ratio, self.y_ratio
 
