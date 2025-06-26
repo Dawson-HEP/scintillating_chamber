@@ -31,6 +31,10 @@ class ScintillatorBlocks(MathDisplayValues):
                         alpha            =               self.alpha,
                         in_between_space =               self.SPACE_BETWEEN_STRUCTURES, # mm
                         )
+        
+        
+
+        self.make_vao()
 
 
     def build_structure(self,
@@ -52,8 +56,6 @@ class ScintillatorBlocks(MathDisplayValues):
 
         sipm_rods = []
 
-        i = 0
-        # top half
         for double in range(num_doubles):
             num_rods = 2**(double+1)
             for xy in range(2):
@@ -65,20 +67,18 @@ class ScintillatorBlocks(MathDisplayValues):
                     dist_bpoints = basepoints[1]-basepoints[0]
 
                     this_sipm_rod = []
-
                     for rod, s in enumerate(basepoints):
-
                         this_sipm_rod.append(
                             self.make_prism_triangles(
                                 *self.make_points_from_high_low(
-                                xl = s if (not tb^xy) else x_i,
-                                xh = s + dist_bpoints if (not tb^xy) else square_side_len,
-                                yl = square_side_len - s - dist_bpoints if (tb^xy) else square_side_len,
-                                yh = square_side_len - s if (tb^xy) else y_i,
-                                zl = (-1)**tb * (absolute_z),
-                                zh = (-1)**tb * (absolute_z + width_per_one),
-                                c  = c2 if rod%2 else c1,
-                                a  = alpha,
+                                    xl = s if (not tb^xy) else x_i,
+                                    xh = s + dist_bpoints if (not tb^xy) else square_side_len,
+                                    yl = square_side_len - s - dist_bpoints if (tb^xy) else square_side_len,
+                                    yh = square_side_len - s if (tb^xy) else y_i,
+                                    zl = (-1)**tb * (absolute_z),
+                                    zh = (-1)**tb * (absolute_z + width_per_one),
+                                    c  = c2 if rod%2 else c1,
+                                    a  = alpha,
                                 ),
                                 show_top_bottom=True
                             )
@@ -90,12 +90,12 @@ class ScintillatorBlocks(MathDisplayValues):
 
         '''
         creates np.array having letter-codes:
-        [A, B, O, P, M, N, C, D, E, F, S, T, Q, R, G, H, I, J, W, X, U, V, K, L]
+        [A, B, M, N, E, F, Q, R, I, J, U, V, O, P, C, D, S, T, G, H, W, X, K, L]
         idx to ABC...VWX:
-        [A, B, C, D, E, F,  G,  H,  I,  J,  K,  L, M, N, O, P,  Q,  R,  S,  T,  U,  V,  W,  X]
-        [0, 1, 6, 7, 8, 9, 14, 15, 16, 17, 22, 23, 4, 5, 2, 3, 12, 13, 10, 11, 20, 21, 18, 19]
+        [A, B,  C,  D, E, F,  G,  H, I, J,  K,  L, M, N,  O,  P, Q, R,  S,  T,  U,  V,  W,  X]
+        [0, 1, 14, 15, 4, 5, 18, 19, 8, 9, 22, 23, 2, 3, 12, 13, 6, 7, 16, 17, 10, 11, 20, 21]
         '''
-
+        
         idx_conversion = [0, 1, 6, 7, 8, 9, 14, 15, 16, 17, 22, 23,
                           4, 5, 2, 3, 12, 13, 10, 11, 20, 21, 18, 19]
         
@@ -104,8 +104,6 @@ class ScintillatorBlocks(MathDisplayValues):
             sorted_sipm.append(sipm_rods[idx])
 
         self.data = sorted_sipm
-
-        self.make_vao()
 
     def make_points_from_high_low(self, xl, xh, yl, yh, zl, zh, c, a):
         points = np.array([
@@ -175,13 +173,13 @@ class ScintillatorBlocks(MathDisplayValues):
         for i, data in enumerate(self.data):
             self.data[i][:, :, 3:7] = [*(self.c2 if i%2 else self.c1), self.alpha]
         
-        #self.data[23][:, :, 3:7]=[0, 0, 0, 1]
+        #self.data[12][:, :, 3:7]=[0, 0, 0, 1]
 
 
     
     def light_scintillators_for_hit(self, point):
         binary=self.data_manager.num_to_raw_binary(point.int_number)
-        yellow = [1, 1, 0, 0.75]
+        yellow = [1, 1, 1, 0.75]
         for i, binary_value in enumerate(binary):
             if binary_value:
                 self.data[i][:, :, 3:7] = yellow
