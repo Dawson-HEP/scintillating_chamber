@@ -9,7 +9,9 @@ from OpenGL.GLU import *
 
 import numpy as np
 
-from scintillator_display.display.impl_compatibility.camera_shader_controls import CameraShaderControls
+from scintillator_display.display.impl_compatibility.camera_controls import CameraControls
+from scintillator_display.display.impl_compatibility.shader_manager import ShaderManager
+
 
 from scintillator_display.display.impl_b.scintillator_blocks import ScintillatorStructure
 from scintillator_display.display.impl_compatibility.scintillator_blocks_build import ScintillatorBlocks
@@ -37,7 +39,13 @@ class Window(MathDisplayValues):
             self.SQUARE_LEN/2, self.SQUARE_LEN/2, -self.SPACE_BETWEEN_STRUCTURES/2
             ])
 
-        self.cam_shader = CameraShaderControls(zoom=90, offset=self.zeroes_offset)
+        self.camera = CameraControls(zoom=90, offset=self.zeroes_offset)
+        self.shaders = ShaderManager(self.camera,
+                                     shader_names=[
+                                         ("vertex_shader.glsl", "fragment_shader.glsl"),
+                                         ("texture_vertex_shader.glsl", "texture_fragment_shader.glsl")
+                                     ])
+        
         self.arduino = ArduinoData()
         self.data_manager = Data(impl_constant=1, impl="b",
                             hull_colour=[0.5, 0, 0.5], hull_opacity=0.8,
@@ -48,8 +56,8 @@ class Window(MathDisplayValues):
         self.xyz_axes = Axes(l=250)
 
 
-        self.cam_shader.make_shader_program()
-        self.cam_shader.setup_opengl()
+        self.shaders.setup_opengl()
+        self.normal_shader, self.texture_shader = self.shaders.shader_programs
 
 
         self.pt_selected = None
@@ -68,6 +76,8 @@ class Window(MathDisplayValues):
 
         self.show_colour = False
 
+
+
     def viewport_shenanigans(self, vm):
         vp_b = vm.add_viewport(None, None)
 
@@ -82,61 +92,65 @@ class Window(MathDisplayValues):
 
     def window_callbacks(self, window, width, height):
         if not (width==0 or height==0):
-            self.cam_shader.width, self.cam_shader.height = width, height
-            self.cam_shader.zoom = self.cam_shader.zoom*self.cam_shader.aspect_ratio*self.cam_shader.height/self.cam_shader.width
-            self.cam_shader.aspect_ratio = width/height
+            self.camera.width, self.camera.height = width, height
+            self.camera.zoom = self.camera.zoom*self.camera.aspect_ratio*self.camera.height/self.camera.width
+            self.camera.aspect_ratio = width/height
 
             glViewport(0, 0, width, height)
             # will be changed to double viewport later
 
 
     def scroll_callbacks(self, window, xoffset, yoffset):
-        scroll_amount = self.cam_shader.zoom/27.5 if self.cam_shader.zoom/27.5 > 0.24 else 0.24
+        scroll_amount = self.camera.zoom/27.5 if self.camera.zoom/27.5 > 0.24 else 0.24
 
-        if ((self.cam_shader.zoom-scroll_amount*yoffset != 0)
+        if ((self.camera.zoom-scroll_amount*yoffset != 0)
                 and not
-            ((self.cam_shader.zoom-scroll_amount*yoffset > -0.1)
+            ((self.camera.zoom-scroll_amount*yoffset > -0.1)
                 and
-             (self.cam_shader.zoom-scroll_amount*yoffset < 0.1))):
-            self.cam_shader.zoom -= scroll_amount*yoffset
+             (self.camera.zoom-scroll_amount*yoffset < 0.1))):
+            self.camera.zoom -= scroll_amount*yoffset
     
     def cursor_pos_callbacks(self, window, xpos, ypos):
-        if self.cam_shader.panning:
-            dx = xpos - self.cam_shader.last_x
-            dy = ypos - self.cam_shader.last_y
-            self.cam_shader.pan_x += dx * self.cam_shader.pan_sensitivity * self.cam_shader.zoom
-            self.cam_shader.pan_y -= dy * self.cam_shader.pan_sensitivity * self.cam_shader.zoom
+        if self.camera.panning:
+            dx = xpos - self.camera.last_x
+            dy = ypos - self.camera.last_y
+            self.camera.pan_x += dx * self.camera.pan_sensitivity * self.camera.zoom
+            self.camera.pan_y -= dy * self.camera.pan_sensitivity * self.camera.zoom
 
-        if self.cam_shader.angling:
-            dx = xpos - self.cam_shader.last_x
-            dy = ypos - self.cam_shader.last_y
-            self.cam_shader.angle_x += dy * self.cam_shader.angle_sensitivity * self.cam_shader.zoom
-            self.cam_shader.angle_y += dx * self.cam_shader.angle_sensitivity * self.cam_shader.zoom
+        if self.camera.angling:
+            dx = xpos - self.camera.last_x
+            dy = ypos - self.camera.last_y
+            self.camera.angle_x += dy * self.camera.angle_sensitivity * self.camera.zoom
+            self.camera.angle_y += dx * self.camera.angle_sensitivity * self.camera.zoom
 
-            self.cam_shader.angle_x %= 360
-            self.cam_shader.angle_y %= 360
-            self.cam_shader.angle_z %= 360
+            self.camera.angle_x %= 360
+            self.camera.angle_y %= 360
+            self.camera.angle_z %= 360
 
 
-        self.cam_shader.last_x, self.cam_shader.last_y = xpos, ypos
+        self.camera.last_x, self.camera.last_y = xpos, ypos
     
     def mouse_callbacks(self, window, button, action, mods):
 
         if action == glfw.PRESS:
             if button == glfw.MOUSE_BUTTON_LEFT:
-                self.cam_shader.panning = True
+                self.camera.panning = True
             elif button == glfw.MOUSE_BUTTON_RIGHT:
-                self.cam_shader.angling = True
+                self.camera.angling = True
         if action == glfw.RELEASE:
             if button == glfw.MOUSE_BUTTON_LEFT:
-                self.cam_shader.panning = False
+                self.camera.panning = False
             elif button == glfw.MOUSE_BUTTON_RIGHT:
-                self.cam_shader.angling = False
+                self.camera.angling = False
 
 
     def render_loop(self, paused):
 
-        self.cam_shader.begin_render_gl_actions()
+        self.shaders.begin_render_gl_actions()
+
+
+
+        self.shaders.set_shader(self.normal_shader)
 
 
 

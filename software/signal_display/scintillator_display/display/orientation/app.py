@@ -3,6 +3,10 @@ from datetime import datetime
 
 import scintillator_display.compat.glfw as glfw
 
+import scintillator_display.compat.imgui as imgui
+
+import pandas as pd
+
 import numpy as np
 
 from scintillator_display.display.impl_compatibility.data_manager import Data
@@ -11,7 +15,8 @@ from scintillator_display.compat.pyserial_singleton import ArduinoData
 
 from scintillator_display.display.impl_compatibility.xyz_axes import Axes
 
-import scintillator_display.display.impl_a.scintillator_structure as scintillator_structure
+import scintillator_display.display.orientation.cube as cube
+
 
 from scintillator_display.display.impl_compatibility.camera_controls import CameraControls
 from scintillator_display.display.impl_compatibility.shader_manager import ShaderManager
@@ -26,6 +31,7 @@ class App(MathDisplayValues):
 
         self.x_ratio, self.y_ratio = x_ratio, y_ratio
 
+
         if init_mode not in ('data', 'debug', 'demo'):
             init_mode='debug'
 
@@ -37,16 +43,21 @@ class App(MathDisplayValues):
         self.zeroes_offset = np.array([
             0, 0, self.SPACE_BETWEEN_STRUCTURES * self.true_scaler / 2
             ])
+        
+        self.zeroes_offset = np.array([0, 0, 0])
 
 
         self.arduino = ArduinoData()
 
-        self.camera = CameraControls(angle_sensitivity=0.1,zoom=25, clear_colour=(0.87,)*3, offset=self.zeroes_offset)
+        self.camera = CameraControls(angle_sensitivity=0.1,zoom=5, clear_colour=(0.87,)*3, offset=self.zeroes_offset)
         self.shaders = ShaderManager(self.camera,
                                      shader_names=[
                                          ("vertex_shader.glsl", "fragment_shader.glsl"),
                                          ("texture_vertex_shader.glsl", "texture_fragment_shader.glsl")
                                      ])
+        
+
+
 
         #setup elements
 
@@ -54,7 +65,8 @@ class App(MathDisplayValues):
                                  hull_colour=[1, 0, 0], hull_opacity=0.3,
                                  store_normals=True,
                                  mode=init_mode)
-        self.plane = scintillator_structure.Plane(data_manager=self.data_manager, scale=scale, true_scaler=self.true_scaler)
+        
+        self.cube = cube.Cube()
         #self.xyz_axes = Axes(l=scale/2)
         self.xyz_axes = Axes(l=4*scale)
 
@@ -67,7 +79,9 @@ class App(MathDisplayValues):
         self.shaders.setup_opengl()
         self.normal_shader, self.texture_shader = self.shaders.shader_programs
 
+
         self.show_colour = True
+
 
 
     def viewport_shenanigans(self, vm):
@@ -155,11 +169,14 @@ class App(MathDisplayValues):
 
         self.shaders.begin_render_gl_actions()
 
-        self.shaders.set_shader(self.normal_shader)
 
 
-        if not paused:
-            self.data_manager.update_data(self.arduino)
+        self.shaders.set_shader(self.normal_shader)        
+        if self.show_axes:
+            self.xyz_axes.draw()
+
+        # if not paused:
+        #     self.data_manager.update_data(self.arduino)
 
         #if self.data_manager.mode == "debug":
         #    print("app", len(self.data_manager.impl_data_is_checked))
@@ -167,9 +184,9 @@ class App(MathDisplayValues):
 
         
         #draw elements
-        self.data_manager.draw_active_hulls(self.data_manager.data, self.data_manager.impl_data_is_checked)
-
-        if self.show_axes:
-            self.xyz_axes.draw()
+        #self.data_manager.draw_active_hulls(self.data_manager.data, self.data_manager.impl_data_is_checked)
         
-        self.plane.draw(self.pt_selected, self.show_colour)
+
+        # use shader
+        self.shaders.set_shader(self.texture_shader)        
+        self.cube.draw()
