@@ -17,9 +17,9 @@ from scintillator_display.display.impl_compatibility.xyz_axes import Axes
 
 import scintillator_display.display.orientation.cube as cube
 
-from scintillator_display.display.impl_compatibility.camera_shader_controls import CameraShaderControls
 
-from scintillator_display.display.orientation.shader.shader_loader import CubeShaderLoader
+from scintillator_display.display.impl_compatibility.camera_controls import CameraControls
+from scintillator_display.display.impl_compatibility.shader_manager import ShaderManager
 
 from OpenGL.GL import *
 
@@ -40,13 +40,20 @@ class App(MathDisplayValues):
         self.zeroes_offset = np.array([
             0, 0, self.SPACE_BETWEEN_STRUCTURES * self.true_scaler / 2
             ])
+        
+        self.zeroes_offset = np.array([0, 0, 0])
 
 
         self.arduino = ArduinoData()
 
-        self.cam_shader = CameraShaderControls(angle_sensitivity=0.1,zoom=25, clear_colour=(0.87,)*3, offset=self.zeroes_offset)
+        self.camera = CameraControls(angle_sensitivity=0.1,zoom=5, clear_colour=(0.87,)*3, offset=self.zeroes_offset)
+        self.shaders = ShaderManager(self.camera,
+                                     shader_names=[
+                                         ("vertex_shader.glsl", "fragment_shader.glsl"),
+                                         ("texture_vertex_shader.glsl", "texture_fragment_shader.glsl")
+                                     ])
+        
 
-        self.cube_shader = CubeShaderLoader()
 
 
         #setup elements
@@ -66,11 +73,9 @@ class App(MathDisplayValues):
         self.show_axes = True
 
 
-        self.cam_shader.make_shader_program()
-        self.cam_shader.setup_opengl()
+        self.shaders.setup_opengl()
+        self.normal_shader, self.texture_shader = self.shaders.shader_programs
 
-        self.cube_shader.make_shader_program()
-        self.cube_shader.setup_opengl()
 
         self.show_colour = True
 
@@ -93,62 +98,62 @@ class App(MathDisplayValues):
             return
 
         # dragging when: right mouse button held
-        self.cam_shader.mouse_dragging = action == glfw.PRESS
+        self.camera.mouse_dragging = action == glfw.PRESS
 
         # panning when: ctrl + right mouse button held
-        self.cam_shader.panning = glfw.get_key(window, glfw.KEY_LEFT_CONTROL) == glfw.PRESS
+        self.camera.panning = glfw.get_key(window, glfw.KEY_LEFT_CONTROL) == glfw.PRESS
 
     def cursor_pos_callback(self, window, xpos, ypos):
-        if self.cam_shader.mouse_dragging:
+        if self.camera.mouse_dragging:
 
             # change in mouse position over one frame
-            dx = xpos - self.cam_shader.last_x
-            dy = ypos - self.cam_shader.last_y
+            dx = xpos - self.camera.last_x
+            dy = ypos - self.camera.last_y
 
-            if self.cam_shader.panning:
+            if self.camera.panning:
                 # adjust pan according to zoom
                 # so that translation is always constant,
                 # independent of zoom
-                zoomed_pan = self.cam_shader.pan_sensitivity * self.cam_shader.zoom
+                zoomed_pan = self.camera.pan_sensitivity * self.camera.zoom
 
                 # updates translation vector
                 # [1, -1] flips the y position as OpenGL's origin
                 # is at the bottom left corner instead of top left
-                self.cam_shader.pan_x += dx * zoomed_pan
-                self.cam_shader.pan_y -= dy * zoomed_pan
+                self.camera.pan_x += dx * zoomed_pan
+                self.camera.pan_y -= dy * zoomed_pan
             else:
 
                 # updates rotation vector
                 # [::-1] reverses the order, effectively mapping the
                 # x screen position onto the OpenGL's x rotation and
                 # y screen position onto the OpenGL's y rotation
-                self.cam_shader.angle_x += dy * self.cam_shader.angle_sensitivity
-                self.cam_shader.angle_y += dx * self.cam_shader.angle_sensitivity
+                self.camera.angle_x += dy * self.camera.angle_sensitivity
+                self.camera.angle_y += dx * self.camera.angle_sensitivity
 
         # save previous to calculate the next delta
-        self.cam_shader.last_x, self.cam_shader.last_y = xpos, ypos
+        self.camera.last_x, self.camera.last_y = xpos, ypos
 
     def scroll_callback(self, window, xoffset, yoffset):
-        scroll_amount = self.cam_shader.zoom/27.5 if self.cam_shader.zoom/27.5 > 0.24 else 0.24
+        scroll_amount = self.camera.zoom/27.5 if self.camera.zoom/27.5 > 0.24 else 0.24
 
-        if ((self.cam_shader.zoom-scroll_amount*yoffset != 0)
+        if ((self.camera.zoom-scroll_amount*yoffset != 0)
                 and not
-            ((self.cam_shader.zoom-scroll_amount*yoffset > -0.1)
+            ((self.camera.zoom-scroll_amount*yoffset > -0.1)
                 and
-             (self.cam_shader.zoom-scroll_amount*yoffset < 0.1))):
-            self.cam_shader.zoom -= scroll_amount*yoffset
+             (self.camera.zoom-scroll_amount*yoffset < 0.1))):
+            self.camera.zoom -= scroll_amount*yoffset
 
     def resize_callback(self, window, width, height):
         # update rendering shape
         glViewport(0, 0, width, height)
-        self.cam_shader.width, self.cam_shader.height = width, height
+        self.camera.width, self.camera.height = width, height
 
         # compute aspect ratio, so that the render
         # is not stretched if the window is stretched
         # bugfix: on X11 Ubuntu 20.04, the height starts
         # at zero when the window is first rendered, so we
         # prevent a zero division error
-        self.cam_shader.aspect_ratio = width / height if height > 0 else 1.0
+        self.camera.aspect_ratio = width / height if height > 0 else 1.0
 
 
     
@@ -157,9 +162,13 @@ class App(MathDisplayValues):
         Render frame event callback
         """
 
-        self.cam_shader.begin_render_gl_actions()
+        self.shaders.begin_render_gl_actions()
 
 
+
+        self.shaders.set_shader(self.normal_shader)        
+        if self.show_axes:
+            self.xyz_axes.draw()
 
         # if not paused:
         #     self.data_manager.update_data(self.arduino)
@@ -171,11 +180,8 @@ class App(MathDisplayValues):
         
         #draw elements
         #self.data_manager.draw_active_hulls(self.data_manager.data, self.data_manager.impl_data_is_checked)
-
-        if self.show_axes:
-            self.xyz_axes.draw()
-
-        #switch shaders
-        self.cube_shader.begin_render_gl_actions()
         
-        self.cube.draw(self.cube_shader.shader_program)
+
+        # use shader
+        self.shaders.set_shader(self.texture_shader)        
+        self.cube.draw()

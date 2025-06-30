@@ -1,6 +1,7 @@
 from scintillator_display.compat.viewport_manager import ViewportManager
 
 from scintillator_display.display.impl_controls.controls import Controls
+#from scintillator_display.display.impl_a.app import App as IMPL_A
 from scintillator_display.display.orientation.app import App as IMPL_A
 from scintillator_display.display.impl_b.window import Window as IMPL_B
 

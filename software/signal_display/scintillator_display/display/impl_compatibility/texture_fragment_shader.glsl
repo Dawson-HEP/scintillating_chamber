@@ -56,16 +56,13 @@ void main() {
     vec3 specular = specular_strength * specular_component * light_color;  
     
     // compose all lighting
-    //vec3 combined = (ambient + diffuse + specular) * vertex_color.rgb;
+    vec3 combined = (ambient + diffuse + specular) * vertex_color.rgb;
     // resulting color
     //fragColor = vec4(combined, 1.0);
 
 
     //vec4(combined, vertex_color.a)
-
-    // fragColor = vertex_color, vertex_color.a;
-
-    vec4 tex_color = texture(tex, tex_coord); // sample the texture
-    vec3 combined = (ambient + diffuse + specular) * vertex_color.rgb * tex_color.rgb;
-    fragColor = vec4(combined, vertex_color.a * tex_color.a);
+    //fragColor = vertex_color, vertex_color.a;
+    vec4 tex_color = texture(tex, tex_coord);
+    fragColor = tex_color;
 }
