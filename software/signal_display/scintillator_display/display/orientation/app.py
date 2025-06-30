@@ -55,6 +55,7 @@ class App(MathDisplayValues):
                                  hull_colour=[1, 0, 0], hull_opacity=0.3,
                                  store_normals=True,
                                  mode=init_mode)
+        
         self.cube = cube.Cube()
         #self.xyz_axes = Axes(l=scale/2)
         self.xyz_axes = Axes(l=4*scale)
@@ -160,8 +161,8 @@ class App(MathDisplayValues):
 
 
 
-        if not paused:
-            self.data_manager.update_data(self.arduino)
+        # if not paused:
+        #     self.data_manager.update_data(self.arduino)
 
         #if self.data_manager.mode == "debug":
         #    print("app", len(self.data_manager.impl_data_is_checked))
@@ -175,6 +176,6 @@ class App(MathDisplayValues):
             self.xyz_axes.draw()
 
         #switch shaders
-        glUseProgram(self.cube_shader.shader_program)
+        self.cube_shader.begin_render_gl_actions()
         
         self.cube.draw(self.cube_shader.shader_program)
