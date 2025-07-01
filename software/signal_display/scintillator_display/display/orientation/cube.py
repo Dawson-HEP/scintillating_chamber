@@ -19,8 +19,9 @@ class Cube:
         # self.img_data = self.generate_img_data("Front")
         # self.texture_id = self.create_texture_from_image(self.img_data)
 
-        self.img_size = (256, 256)
-        self.img_data = self.generate_all_images()
+        self.img_size = (128, 128)
+        self.texture_ids = self.create_texture_from_image(self.generate_all_images())
+        
     
 
     def generate_textured_cube_data(self):
@@ -115,7 +116,7 @@ class Cube:
     def generate_img_data(self,text,size):
 
         #self.size = (1, 1)
-        font_size = 64
+        font_size = 32
 
         #img = Image.new("RGBA", self.size, color = (0, 0, 0, 255))
         img = Image.new("RGBA", size, color = (255,255,255,255))
@@ -162,43 +163,47 @@ class Cube:
         image_data = []
         for t in text:
             image_data.append(self.generate_img_data(t,self.img_size))
-        
+
         return image_data
     
     
     def create_texture_from_image(self,img_data):
         width, height = self.img_size
 
-        tex_id = glGenTextures(1)                        # Generate a new texture ID
-        glBindTexture(GL_TEXTURE_2D, tex_id)             # Bind it as a 2D texture
+        tex_id = glGenTextures(6)                        # Generate a new texture ID
+
+        for i, img in enumerate(img_data):
+            glBindTexture(GL_TEXTURE_2D, tex_id[i])             # Bind it as a 2D texture
 
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT)
-        
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT)
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT)
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT)
+            
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
 
-        ## Set texture parameters
-        #glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-        #glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
-        #glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
-        #glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
+            ## Set texture parameters
+            #glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+            #glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+            #glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+            #glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
 
-        # Upload the image to the GPU
-        glTexImage2D(
-            GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, img_data)
-        glGenerateMipmap(GL_TEXTURE_2D)
-        
+            # Upload the image to the GPU
+            glTexImage2D(
+                GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, img)
+            #glGenerateMipmap(GL_TEXTURE_2D)
+
+
+
         return tex_id
 
 
 
     def draw(self):
-        for i, img in enumerate(self.img_data):
+        for i, tex in enumerate(self.texture_ids):
             glActiveTexture(GL_TEXTURE0)    
-            glBindTexture(GL_TEXTURE_2D, self.create_texture_from_image(img))  
+            glBindTexture(GL_TEXTURE_2D, tex)  
 
             glBindVertexArray(self.vao)  
             glPointSize(10) 
@@ -206,4 +211,7 @@ class Cube:
             glBindVertexArray(0)    
 
             glBindTexture(GL_TEXTURE_2D, 0)
+
+    def __del__(self):
+        glDeleteTextures(self.texture_ids)
 
