@@ -8,8 +8,8 @@ from OpenGL.GL import *
 from PIL import Image, ImageDraw, ImageFont
 
 class Cube:
-    def __init__(self):
-        self.data = self.generate_textured_cube_data()
+    def __init__(self,scintillator_size):
+        self.data = self.generate_textured_cube_data(scintillator_size)
         self.vao, self.vbo = create_vao(self.data, return_vbo=True,
                                         store_normals=True, store_texcoords=True)
                                         #store_normals=True, store_texcoords=False)
@@ -24,7 +24,7 @@ class Cube:
         
     
 
-    def generate_textured_cube_data(self):
+    def generate_textured_cube_data(self,l):
 
         """
         Generates vertices for a 1x1x1 unit cube in a right-handed
@@ -35,7 +35,6 @@ class Cube:
         Format per vertex:
         [pos_x, pos_y, pos_z, r, g, b, a, norm_x, norm_y, norm_z, u, v]
         """
-        l = 0.5  # half-length of the cube side
 
         # UV coordinates for a standard quad, mapping a texture correctly
         uv_bl = (0, 0) # Bottom-Left
@@ -101,13 +100,13 @@ class Cube:
             *v3,  *color,  *v3,  *uv_tl,
 
             # == Bottom Face ==
-            *v6,  *color,  *v6,  *uv_bl,
-            *v5,  *color,  *v5,  *uv_br,
-            *v7,  *color,  *v7,  *uv_tr,
+            *v7,  *color,  *v6,  *uv_bl,
+            *v8,  *color,  *v5,  *uv_br,
+            *v6,  *color,  *v7,  *uv_tr,
 
-            *v6,  *color,  *v6,  *uv_bl,
-            *v7,  *color,  *v7,  *uv_tr,
-            *v8,  *color,  *v8,  *uv_tl,
+            *v7,  *color,  *v6,  *uv_bl,
+            *v6,  *color,  *v7,  *uv_tr,
+            *v5,  *color,  *v8,  *uv_tl,
         ]
 
         return np.array(cube_vertices, dtype=np.float32)

@@ -27,7 +27,7 @@ from scintillator_display.compat.universal_values import MathDisplayValues
 
 
 class App(MathDisplayValues):
-    def __init__(self, init_mode=('data', 'debug', 'demo'), x_ratio=(1, 3, 5), y_ratio=(0, 1, 1)):
+    def __init__(self, init_mode=('data', 'debug', 'demo'), x_ratio=(1, 3, 5), y_ratio=(0, 1, 1), impl = None, scale = 1):
 
         self.x_ratio, self.y_ratio = x_ratio, y_ratio
 
@@ -36,20 +36,11 @@ class App(MathDisplayValues):
             init_mode='debug'
 
 
-        self.true_scaler = 0.1
-        #self.true_scaler = 1
-        scale = self.SQUARE_LEN * self.true_scaler
-
-        self.zeroes_offset = np.array([
-            0, 0, self.SPACE_BETWEEN_STRUCTURES * self.true_scaler / 2
-            ])
-        
-        self.zeroes_offset = np.array([0, 0, 0])
 
 
-        self.arduino = ArduinoData()
+        self.camera = impl.camera
 
-        self.camera = CameraControls(angle_sensitivity=0.1,zoom=5, clear_colour=(0.87,)*3, offset=self.zeroes_offset)
+
         self.shaders = ShaderManager(self.camera,
                                      shader_names=[
                                          ("vertex_shader.glsl", "fragment_shader.glsl"),
@@ -59,16 +50,10 @@ class App(MathDisplayValues):
 
 
 
-        #setup elements
-
-        self.data_manager = Data(impl_constant=self.true_scaler, impl="a",
-                                 hull_colour=[1, 0, 0], hull_opacity=0.3,
-                                 store_normals=True,
-                                 mode=init_mode)
         
-        self.cube = cube.Cube()
+        self.cube = cube.Cube(scale)
         #self.xyz_axes = Axes(l=scale/2)
-        self.xyz_axes = Axes(l=4*scale)
+        self.xyz_axes = Axes(l=4* scale)
 
 
         self.pt_selected = None
@@ -171,9 +156,9 @@ class App(MathDisplayValues):
 
 
 
-        self.shaders.set_shader(self.normal_shader)        
-        if self.show_axes:
-            self.xyz_axes.draw()
+        # self.shaders.set_shader(self.normal_shader)        
+        # if self.show_axes:
+        #     self.xyz_axes.draw()
 
         # if not paused:
         #     self.data_manager.update_data(self.arduino)
@@ -188,5 +173,7 @@ class App(MathDisplayValues):
         
 
         # use shader
+
+
         self.shaders.set_shader(self.texture_shader)        
         self.cube.draw()
