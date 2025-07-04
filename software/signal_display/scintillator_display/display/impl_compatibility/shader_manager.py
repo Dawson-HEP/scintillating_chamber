@@ -9,9 +9,11 @@ from scintillator_display.display.impl_compatibility.camera_controls import Came
 
 class ShaderManager():
     def __init__(self, camera:CameraControls,
-                 shader_names=[("vertex_shader.glsl", "fragment_shader.glsl")]):
+                 shader_names=[("vertex_shader.glsl", "fragment_shader.glsl")], is_orientation = False):
         self.camera = camera
         self.shader_names = shader_names
+
+        self.is_orientation = is_orientation
 
     def get_shader_text(self, shader_file):
         this_file_path = os.path.abspath(__file__)
@@ -84,14 +86,17 @@ class ShaderManager():
 
     def begin_render_gl_actions(self):
         # set background color
-        glClearColor(*self.camera.clear_colour, 1.0)
+        if not self.is_orientation:
+            glClearColor(*self.camera.clear_colour, 1.0)
+        else:
+            glClearColor(*self.camera.clear_colour, 0)    #transparent background for orientation feature
 
         # Dual-viewports: Clear bufferbit after clear color
         # clear color and depth cache from previous frame
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
     def set_uniforms(self, shader_program):
-        camera_transform = self.camera.get_camera_tranform()
+        camera_transform = self.camera.get_camera_tranform(self.is_orientation)     #if self.is_orientation, then there is no panning
 
         self.set_uniform_mat4("world_transform" , self.camera.get_world_transform(), shader_program)
         self.set_uniform_mat4("cam_transform"   , camera_transform, shader_program)

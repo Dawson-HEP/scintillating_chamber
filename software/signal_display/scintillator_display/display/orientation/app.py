@@ -36,7 +36,14 @@ class App(MathDisplayValues):
             init_mode='debug'
 
 
-
+        if impl.__class__.__name__ == "App":
+            self.zeroes_offset = np.array([
+            0, 0, self.SPACE_BETWEEN_STRUCTURES * impl.true_scaler / 2
+            ])
+        else:
+            self.zeroes_offset = np.array([
+            self.SQUARE_LEN/2, self.SQUARE_LEN/2, -self.SPACE_BETWEEN_STRUCTURES/2
+            ])
 
         self.camera = impl.camera
 
@@ -45,11 +52,8 @@ class App(MathDisplayValues):
                                      shader_names=[
                                          ("vertex_shader.glsl", "fragment_shader.glsl"),
                                          ("texture_vertex_shader.glsl", "texture_fragment_shader.glsl")
-                                     ])
+                                     ], is_orientation = True)
         
-
-
-
         
         self.cube = cube.Cube(scale)
         #self.xyz_axes = Axes(l=scale/2)

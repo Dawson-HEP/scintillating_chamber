@@ -131,10 +131,15 @@ class CameraControls(MathDisplayValues):
 
         return orthographic_projection
 
-    def get_camera_tranform(self):
+    def get_camera_tranform(self, is_orientation):
+        
 
-        camera_rotation = self.rotate_around_p(p=self.zero_offset, r=(self.angle_x, self.angle_y, self.angle_z))
-        camera_pan = self.translate(self.pan_x, self.pan_y, self.pan_z)
+        if not is_orientation:    
+            camera_pan = self.translate(self.pan_x, self.pan_y, self.pan_z)
+            camera_rotation = self.rotate_around_p(p=self.zero_offset, r=(self.angle_x, self.angle_y, self.angle_z))
+        else:
+            camera_pan = self.translate(0, 0, 0)
+            camera_rotation = self.rotate_around_p(p=(0,0,self.zero_offset[-1]), r=(self.angle_x, self.angle_y, self.angle_z))
 
         return camera_pan @ camera_rotation
 
