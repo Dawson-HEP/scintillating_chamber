@@ -60,25 +60,22 @@ class App(MathDisplayValues):
         self.xyz_axes = Axes(l=4* scale)
 
 
-        self.pt_selected = None
-        self.dataset_active = None
-        self.show_axes = True
+
+        self.show_axes = False
 
 
         self.shaders.setup_opengl()
         self.normal_shader, self.texture_shader = self.shaders.shader_programs
 
 
-        self.show_colour = True
-
 
 
     def viewport_shenanigans(self, vm):
         vp_a = vm.add_viewport(None, None)
 
-        vp_a.mouse_button_callback = self.mouse_button_callback
-        vp_a.cursor_pos_callback = self.cursor_pos_callback
-        vp_a.scroll_callback = self.scroll_callback
+        # vp_a.mouse_button_callback = self.mouse_button_callback
+        # vp_a.cursor_pos_callback = self.cursor_pos_callback
+        # vp_a.scroll_callback = self.scroll_callback
         vp_a.window_size_callback = self.resize_callback
 
         vp_a.x_ratio, vp_a.y_ratio = self.x_ratio, self.y_ratio
@@ -160,9 +157,10 @@ class App(MathDisplayValues):
 
 
 
-        # self.shaders.set_shader(self.normal_shader)        
-        # if self.show_axes:
-        #     self.xyz_axes.draw()
+
+        if self.show_axes:
+            self.shaders.set_shader(self.normal_shader)        
+            self.xyz_axes.draw()
 
         # if not paused:
         #     self.data_manager.update_data(self.arduino)
