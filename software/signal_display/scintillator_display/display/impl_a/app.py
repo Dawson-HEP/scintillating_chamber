@@ -31,7 +31,7 @@ class App(MathDisplayValues):
 
 
         self.true_scaler = 0.1
-        #self.true_scaler = 1
+        # self.true_scaler = 1
         scale = self.SQUARE_LEN * self.true_scaler
 
         self.zeroes_offset = np.array([
@@ -41,7 +41,8 @@ class App(MathDisplayValues):
 
         self.arduino = ArduinoData()
 
-        self.camera = CameraControls(angle_sensitivity=0.1,zoom=25, clear_colour=(0.87,)*3, offset=self.zeroes_offset)
+        self.camera = CameraControls(angle_sensitivity=0.1,zoom=25, clear_colour=(0.9,)*3, offset=self.zeroes_offset)
+        #self.camera = CameraControls(zoom=90, clear_colour=(0.87,)*3, offset=self.zeroes_offset)
         self.shaders = ShaderManager(self.camera,
                                      shader_names=[
                                          ("vertex_shader.glsl", "fragment_shader.glsl"),
