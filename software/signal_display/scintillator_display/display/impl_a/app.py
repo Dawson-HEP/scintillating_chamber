@@ -8,7 +8,6 @@ import numpy as np
 from scintillator_display.display.impl_compatibility.data_manager import Data
 from scintillator_display.compat.pyserial_singleton import ArduinoData
 
-
 from scintillator_display.display.impl_compatibility.xyz_axes import Axes
 
 import scintillator_display.display.impl_a.scintillator_structure as scintillator_structure
