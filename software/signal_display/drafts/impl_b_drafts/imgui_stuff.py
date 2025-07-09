@@ -1,8 +1,8 @@
 # import imgui
 # from imgui.integrations.glfw import GlfwRenderer
 
-import scintillator_display.compat.imgui as imgui
-from scintillator_display.compat.imgui.integrations.glfw import GlfwRenderer
+import software.signal_display.scintillator_display.compat.imgui as imgui
+from software.signal_display.scintillator_display.compat.imgui.integrations.glfw import GlfwRenderer
 
 from OpenGL.GL import *
 from OpenGL.GLU import *

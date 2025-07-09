@@ -1,13 +1,13 @@
 import importlib
 import importlib.resources
 
-import scintillator_display.compat.imgui as imgui
-import scintillator_display.display.impl_controls.res as res
+import software.signal_display.scintillator_display.compat.imgui as imgui
+import software.signal_display.scintillator_display.display.impl_controls.res as res
 
 import OpenGL.GL as gl
 from PIL import Image
 
-from scintillator_display.compat.viewport_manager import ViewportManager
+from software.signal_display.scintillator_display.compat.viewport_manager import ViewportManager
 
 
 def bind_texture(file):

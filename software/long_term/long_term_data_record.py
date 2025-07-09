@@ -2,7 +2,7 @@ import time
 import logging
 from logging.handlers import TimedRotatingFileHandler
 
-from scintillator_display.display.impl_a.data_manager import test as DataRecorder
+from software.signal_display.scintillator_display.display.impl_a.data_manager import test as DataRecorder
 
 
 def record(logger):

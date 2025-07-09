@@ -1,4 +1,4 @@
-from scintillator_display.math.convex_hull import ConvexHullDetection
+from software.signal_display.scintillator_display.math.convex_hull import ConvexHullDetection
 
 
 def test_instantiate():

@@ -8,11 +8,11 @@ import numpy as np
 
 from OpenGL.GL import *
 
-from scintillator_display.math.convex_hull import ConvexHullDetection as Detection
+from software.signal_display.scintillator_display.math.convex_hull import ConvexHullDetection as Detection
 
-from scintillator_display.universal_values import MathDisplayValues
+from software.signal_display.scintillator_display.universal_values import MathDisplayValues
 
-from scintillator_display.display.vao_vbo import create_vao, update_vbo, draw_vao
+from software.signal_display.scintillator_display.display.vao_vbo import create_vao, update_vbo, draw_vao
 
 class Data(MathDisplayValues):
     def __init__(self, impl_constant, impl, hull_colour, hull_opacity, store_normals, debug=True):

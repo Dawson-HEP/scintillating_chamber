@@ -1,5 +1,5 @@
-import scintillator_display.compat.glfw as glfw
-import scintillator_display.compat.imgui as imgui
+import software.signal_display.scintillator_display.compat.glfw as glfw
+import software.signal_display.scintillator_display.compat.imgui as imgui
 
 from OpenGL.GL import glClearColor, glClear, GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT
 
@@ -9,7 +9,7 @@ import time
 
 import numpy as np
 
-from scintillator_display.display.impl_compatibility.data_manager import DataPoint
+from software.signal_display.scintillator_display.display.impl_compatibility.data_manager import DataPoint
 
 
 class Controls:

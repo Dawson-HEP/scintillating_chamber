@@ -1,7 +1,7 @@
 import glm
 
 # import glfw
-import scintillator_display.compat.glfw as glfw
+import software.signal_display.scintillator_display.compat.glfw as glfw
 
 import numpy as np
 

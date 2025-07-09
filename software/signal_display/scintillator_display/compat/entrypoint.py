@@ -1,9 +1,9 @@
-from scintillator_display.compat.viewport_manager import ViewportManager
+from software.signal_display.scintillator_display.compat.viewport_manager import ViewportManager
 
-from scintillator_display.display.impl_controls.controls import Controls
-#from scintillator_display.display.impl_a.app import App as IMPL_A
-from scintillator_display.display.orientation.app import App as IMPL_A
-from scintillator_display.display.impl_b.window import Window as IMPL_B
+from software.signal_display.scintillator_display.display.impl_controls.controls import Controls
+#from software.signal_display.scintillator_display.display.impl_a.app import App as IMPL_A
+from software.signal_display.scintillator_display.display.orientation.app import App as IMPL_A
+from software.signal_display.scintillator_display.display.impl_b.window import Window as IMPL_B
 
 
 def entrypoint():

@@ -4,7 +4,7 @@ import glm
 from OpenGL.GL import *
 from OpenGL.GL.shaders import compileShader, compileProgram
 
-import scintillator_display.display.impl_a.graphics.shaders as shaders
+import software.signal_display.scintillator_display.display.impl_a.graphics.shaders as shaders
 
 import numpy as np
 

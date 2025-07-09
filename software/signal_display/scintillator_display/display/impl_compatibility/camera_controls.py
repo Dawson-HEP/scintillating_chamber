@@ -1,6 +1,6 @@
 import numpy as np
 
-from scintillator_display.compat.universal_values import MathDisplayValues
+from software.signal_display.scintillator_display.compat.universal_values import MathDisplayValues
 
 class CameraControls(MathDisplayValues):
     def __init__(self,

@@ -5,7 +5,7 @@ from OpenGL.GL.shaders import compileShader, compileProgram
 
 import os
 
-from scintillator_display.display.impl_compatibility.camera_controls import CameraControls
+from software.signal_display.scintillator_display.display.impl_compatibility.camera_controls import CameraControls
 
 class ShaderManager():
     def __init__(self, camera:CameraControls,

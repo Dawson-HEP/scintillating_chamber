@@ -2,7 +2,7 @@ import glfw
 import imgui
 
 from OpenGL.GL import glViewport, glEnable, GL_SCISSOR_TEST, glScissor, glDisable
-from scintillator_display.compat.imgui_manager import ImguiManager
+from software.signal_display.scintillator_display.compat.imgui_manager import ImguiManager
 
 import time
 

@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["data", "docs", "funding", "hardware", "proposal", "resources", "software"]
+
+[project]
+name = "scintillating_chamber"
+version = "0.1.0"
+requires-python = ">=3.11"
+description = "Scintillating Chamber"
+authors = [
+  {name = "Andy Yu", email = "andy.yu@dawsoncollege.qc.ca"},
+  {name = "Evan Parasol", email = "blackdragon6493@gmail.com"},
+  {name = "Alex Xia", email = "xtxiatianyi@gmail.com"},
+  {name = "Aljoscha Ziegler", email = "ziegleraljoscha@gmail.com"},
+  {name = "Leandro Perez-Moran", email = "pemle2007@gmail.com"},
+]
+readme = "README.md"
+#license = {text = "MIT License"}
+#keywords = ["physics", "particle", "simulation", "muon", "application"]
+#classifiers = [
+#  "Development Status :: 4 - Beta",
+#  "Programming Language :: Python",
+#  "Topic :: Multimedia :: Graphics :: 3D Rendering",
+#  "Topic :: Scientific/Engineering :: Physics",
+#  "Topic :: Scientific/Engineering :: Visualization"
+#]
+
+[project.scripts]
+chamber = "software.cli_tool.cli_tool:cli"
+#display = "software.signal_display.scintillator_display.compat.entrypoint:entrypoint"

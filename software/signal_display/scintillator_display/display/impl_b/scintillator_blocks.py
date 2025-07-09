@@ -4,13 +4,13 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 
 
-from scintillator_display.display.impl_compatibility.vao_vbo import create_vao, update_vbo, draw_vao
+from software.signal_display.scintillator_display.display.impl_compatibility.vao_vbo import create_vao, update_vbo, draw_vao
 
-from scintillator_display.compat.universal_values import MathDisplayValues
+from software.signal_display.scintillator_display.compat.universal_values import MathDisplayValues
 
-from scintillator_display.display.impl_compatibility.data_manager import Data
+from software.signal_display.scintillator_display.display.impl_compatibility.data_manager import Data
 
-from scintillator_display.display.impl_compatibility.scintillator_blocks_build import ScintillatorBlocks
+from software.signal_display.scintillator_display.display.impl_compatibility.scintillator_blocks_build import ScintillatorBlocks
 
 
 class ScintillatorStructure(MathDisplayValues):

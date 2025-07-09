@@ -1,5 +1,5 @@
-from scintillator_display.display.impl_a.data_manager import test
-from scintillator_display.display.impl_b.input_data import DataReception
+from software.signal_display.scintillator_display.display.impl_a.data_manager import test
+from software.signal_display.scintillator_display.display.impl_b.input_data import DataReception
 
 def test_instantiate():
     impl_a = test(debug=True)

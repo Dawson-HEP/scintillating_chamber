@@ -1,7 +1,7 @@
 import time
 
 
-import scintillator_display.compat.glfw as glfw
+import software.signal_display.scintillator_display.compat.glfw as glfw
 
 
 from OpenGL.GL import *
@@ -9,22 +9,22 @@ from OpenGL.GLU import *
 
 import numpy as np
 
-from scintillator_display.display.impl_compatibility.camera_controls import CameraControls
-from scintillator_display.display.impl_compatibility.shader_manager import ShaderManager
+from software.signal_display.scintillator_display.display.impl_compatibility.camera_controls import CameraControls
+from software.signal_display.scintillator_display.display.impl_compatibility.shader_manager import ShaderManager
 
 
-from scintillator_display.display.impl_b.scintillator_blocks import ScintillatorStructure
-from scintillator_display.display.impl_compatibility.scintillator_blocks_build import ScintillatorBlocks
+from software.signal_display.scintillator_display.display.impl_b.scintillator_blocks import ScintillatorStructure
+from software.signal_display.scintillator_display.display.impl_compatibility.scintillator_blocks_build import ScintillatorBlocks
 
-from scintillator_display.display.impl_compatibility.vao_vbo import create_vao, update_vbo, draw_vao
+from software.signal_display.scintillator_display.display.impl_compatibility.vao_vbo import create_vao, update_vbo, draw_vao
 
-from scintillator_display.display.impl_compatibility.xyz_axes import Axes
+from software.signal_display.scintillator_display.display.impl_compatibility.xyz_axes import Axes
 
-from scintillator_display.display.impl_compatibility.data_manager import Data
+from software.signal_display.scintillator_display.display.impl_compatibility.data_manager import Data
 
-from scintillator_display.compat.pyserial_singleton import ArduinoData
+from software.signal_display.scintillator_display.compat.pyserial_singleton import ArduinoData
 
-from scintillator_display.compat.universal_values import MathDisplayValues
+from software.signal_display.scintillator_display.compat.universal_values import MathDisplayValues
 
 
 class Window(MathDisplayValues):

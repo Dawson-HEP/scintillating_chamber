@@ -1,29 +1,29 @@
 import time
 from datetime import datetime
 
-import scintillator_display.compat.glfw as glfw
+import software.signal_display.scintillator_display.compat.glfw as glfw
 
-import scintillator_display.compat.imgui as imgui
+import software.signal_display.scintillator_display.compat.imgui as imgui
 
 import pandas as pd
 
 import numpy as np
 
-from scintillator_display.display.impl_compatibility.data_manager import Data
-from scintillator_display.compat.pyserial_singleton import ArduinoData
+from software.signal_display.scintillator_display.display.impl_compatibility.data_manager import Data
+from software.signal_display.scintillator_display.compat.pyserial_singleton import ArduinoData
 
 
-from scintillator_display.display.impl_compatibility.xyz_axes import Axes
+from software.signal_display.scintillator_display.display.impl_compatibility.xyz_axes import Axes
 
-import scintillator_display.display.orientation.cube as cube
+import software.signal_display.scintillator_display.display.orientation.cube as cube
 
 
-from scintillator_display.display.impl_compatibility.camera_controls import CameraControls
-from scintillator_display.display.impl_compatibility.shader_manager import ShaderManager
+from software.signal_display.scintillator_display.display.impl_compatibility.camera_controls import CameraControls
+from software.signal_display.scintillator_display.display.impl_compatibility.shader_manager import ShaderManager
 
 from OpenGL.GL import *
 
-from scintillator_display.compat.universal_values import MathDisplayValues
+from software.signal_display.scintillator_display.compat.universal_values import MathDisplayValues
 
 
 class App(MathDisplayValues):

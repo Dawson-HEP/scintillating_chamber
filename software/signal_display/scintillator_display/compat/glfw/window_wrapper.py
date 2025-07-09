@@ -1,6 +1,6 @@
 import glfw
 
-from scintillator_display.compat.viewport_manager import ViewportManager
+from software.signal_display.scintillator_display.compat.viewport_manager import ViewportManager
 
 def init():
     # glfw.init()

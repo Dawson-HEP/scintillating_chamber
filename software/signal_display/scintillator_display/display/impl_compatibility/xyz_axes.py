@@ -3,7 +3,7 @@ import numpy as np
 from OpenGL.GL import *
 
 
-from scintillator_display.display.impl_compatibility.vao_vbo import create_vao, draw_vao
+from software.signal_display.scintillator_display.display.impl_compatibility.vao_vbo import create_vao, draw_vao
 
 class Axes:
     def __init__(self, l):
