@@ -1,37 +1,51 @@
 import numpy as np
 import pandas as pd
 
-#Truncate Data
-def clean(df):
-    time = 1000  #ms
-    df = df[df["time"] < time]
-
-
-#Insert file name here
-dfs = [
+class locator:
+    def __init__(self):
+        self.dfs = [
     "",
     "",
     ""
 
-]
+    ]  
+    
+     #Read Every CSV
+    def readcsv(self):
+        self.record = []
+        for i in self.dfs:
+            self.record.append(pd.read_csv(i))
 
-#Read Every CSV
-record = []
-for i in dfs:
-    record.append(pd.read_csv(i))
+    #Truncate Data
+    def clean(self,df):
+        time = 1000  #ms
+        df = df[df["time"] < time]   
+    
 
 
-#Clean Data and find Length of csv
-frequency = []
-for df in record:
-    clean(df)
-    frequency.append(df.shape[0])
+    #Clean Data and find Length of csv
+    def findLength(self):
+
+        self.frequency = []
+        for df in self.record:
+            self.clean(df)
+            self.frequency.append(df.shape[0])
 
 
-#Find the maximum
-max = frequency.max()
-max_id = frequency.index(max)
+    def findMax(self):
+        #Find the maximum
+        self.max = self.frequency.max()
+        self.max_id = self.frequency.index(self.max)
 
-print(f"max = {max}, datapoint = {max_id}")
-print(f"Position: {dfs[max_id]}")
+    def output(self):
+        self.readcsv()
+        self.findLength()
+        self.findMax()
 
+
+        print(f"max = {max}, datapoint = {self.max_id}")
+        print(f"Position: {self.dfs[self.max_id]}")
+
+begin = locator()
+
+begin.output()
