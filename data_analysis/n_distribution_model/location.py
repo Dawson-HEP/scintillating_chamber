@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 
-
 #Truncate Data
 def clean(df):
     time = 1000  #ms
@@ -17,13 +16,14 @@ dfs = [
 ]
 
 #Read Every CSV
+record = []
 for i in dfs:
-    dfs.append(pd.read_csv(dfs))
+    record.append(pd.read_csv(i))
 
 
 #Clean Data and find Length of csv
 frequency = []
-for df in dfs:
+for df in record:
     clean(df)
     frequency.append(df.shape[0])
 
