@@ -11,25 +11,24 @@ class locator:
         for i in self.dfs:
             self.record.append(pd.read_csv(i))
 
-    #Truncate Data
-    def clean(self,df):
-        time = 1000  #ms
-        df = df[df["time"] < time]   
     
-
 
     #Clean Data and find Length of csv
     def findLength(self):
 
+        time = 1000
         self.frequency = []
+
         for df in self.record:
-            self.clean(df)
+
+            df = df[df["time"] < time] 
+            
             self.frequency.append(df.shape[0])
 
 
     def findMax(self):
         #Find the maximum
-        self.max = self.frequency.max()
+        self.max = max(self.frequency)
         self.max_id = self.frequency.index(self.max)
 
     def output(self):
@@ -38,7 +37,7 @@ class locator:
         self.findMax()
 
 
-        print(f"max = {max}, datapoint = {self.max_id}")
+        print(f"max = {self.max}, datapoint = {self.max_id}")
         print(f"Position: {self.dfs[self.max_id]}")
         print(self.dfs)
 
