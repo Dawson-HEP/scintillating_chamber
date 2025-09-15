@@ -2,13 +2,8 @@ import numpy as np
 import pandas as pd
 
 class locator:
-    def __init__(self):
-        self.dfs = [
-    "",
-    "",
-    ""
-
-    ]  
+    def __init__(self, files):
+        self.dfs = files
     
      #Read Every CSV
     def readcsv(self):
@@ -45,7 +40,15 @@ class locator:
 
         print(f"max = {max}, datapoint = {self.max_id}")
         print(f"Position: {self.dfs[self.max_id]}")
+        print(self.dfs)
 
-begin = locator()
 
-begin.output()
+
+files = [
+    ""
+
+]
+
+x = locator(files)
+
+x.output()
