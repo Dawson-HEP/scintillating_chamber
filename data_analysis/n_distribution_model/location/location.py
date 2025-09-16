@@ -53,9 +53,11 @@ class locator:
         self.rates = []
 
         for df in self.record:
-            hits = df["trigger_data"].sum()
+            hits = (df["trigger_data"] == 0).sum()
 
-            rate = hits / df.shape[0]
+            rate_of_0 = hits / df.shape[0]
+
+            rate = 1 - rate_of_0
 
             self.rates.append(rate)
         
@@ -69,7 +71,7 @@ class locator:
 
 
 files = [
-
+"sample_data.csv"
 
 ]
 
