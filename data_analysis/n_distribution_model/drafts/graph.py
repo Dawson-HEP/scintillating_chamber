@@ -32,8 +32,8 @@ h = 30      #mm, facing z
 # i = d_yaw * scale
 # j = round((d_pitch * np.sin(max_pitch_rad)) * scale)  #Since this is not 180˚, we must calculate the cross-sectional area
 
-i = 2000
-j = 2000
+i = 200
+j = 200
 
 #Create a template matrix
 matrix = np.zeros((i, j))
@@ -77,7 +77,7 @@ projection_matrix = np.array([
     [0, 0,  0,  1]
 ])
 
-coords = (coords + 1) * 500
+coords = (coords + 1) * 10
 #Project the matrix onto yz plane
 hexagon = np.round((coords @ projection_matrix.T)[:,:2])
 #Calculate the convex hull, which is the minimum coordinates that are needed to contain all the points 
@@ -116,10 +116,10 @@ X, Y = np.meshgrid(x, y)
 
 # Plot
 
-fig, ax = plt.subplots(subplot_kw={'projection':'3d'})
+# fig, ax = plt.subplots(subplot_kw={'projection':'3d'})
 
-#fig = plt.figure()
-#ax = fig.add_subplot(111, projection='3d')
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
 ax.plot_surface(X, Y, matrix, cmap='terrain')  # 'terrain' colormap looks like mountains
 ax.set_xlabel("X")
 ax.set_ylabel("Y")
