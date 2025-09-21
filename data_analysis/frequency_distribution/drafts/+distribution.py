@@ -57,3 +57,8 @@ ax.set_ylabel("Y position")
 ax.set_zlabel("Hit Rate")
 
 plt.show()
+
+
+
+
+
