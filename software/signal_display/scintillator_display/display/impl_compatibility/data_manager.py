@@ -75,6 +75,10 @@ class Data(MathDisplayValues):
                 0b100110100101011010011010,
             ]
         
+        #self.test_data = [
+        #    0b000000000000000000000001,
+        #]
+        
         yellow_colour_terms =  {
             '''
              01 : 12 green red # x
@@ -226,39 +230,129 @@ class Data(MathDisplayValues):
             raise Exception('invadid mode')
 
 
-    def num_to_raw_binary(self, num):
+    def num_to_raw_binary_lsb(self, num):
         return np.array([(num & (2**i)) >> i for i in range(24)])
     
     
-    def cook_data_into_scintillators(self, raw_data):
+    def cook_data_into_scintillators(self, raw_data, t=False, data_is_binary=False, i=None):
         """
         transform data ready to be interpreted by the display, then update self.data
         """
+
+        if data_is_binary:
+            k = raw_data
+            #print(k, "m")
+        else:
+            k = self.num_to_raw_binary_lsb(raw_data)
         
         f_sc_idx = [
         [(21,20),(16,17),(13,12),(8,9),(0,1),(5,4),],
         [(22,23),(18,19),(15,14),(11,10),(2,3),(6,7),],
         ]
 
-        #f_sc_idx = [
-        #[(20,21),(16,17),(13,12),(9,8),(0,1),(5,4),],
-        #[(22,23),(18,19),(15,14),(11,10),(2,3),(6,7),],
+        new_f_sc_idx = [
+        [(12, 13),(9, 8),(17, 16),(1, 0),(20, 21),(4, 5)],
+        [(14, 15),(11, 10),(19, 18),(3, 2),(22, 23),(6, 7)],
+        ]
+
+        new_f_sc_idx = [
+        [(12, 13),(9, 8),(17, 16),(1, 0),(20, 21),(4, 5)],
+        [(14, 15),(11, 10),(19, 18),(3, 2),(22, 23),(6, 7)],
+        ]
+
+        #e_o = k[
+        #        [(12, 13),(9, 8),(17, 16),(1, 0),(20, 21),(4, 5),
+        #         (14, 15),(11, 10),(19, 18),(3, 2),(22, 23),(6, 7)]
+        #    ]
+        e_o = k[
+                [(12, 13),(9, 8),(16, 17),(1, 0),(20, 21),(4, 5),
+                 (14, 15),(11, 10),(19, 18),(3, 2),(22, 23),(6, 7)]
+            ]
+        evan_order = [(int(e[0]), int(e[1])) for e in e_o]
+        if t:
+            #print()
+            #print("k", e_o)
+            #print()
+            #print(evan_order, i, 2*np.where(np.array(evan_order)==1)[0] + np.where(np.array(evan_order)==1)[1])
+            pass
+
+        #except Exception as err:
+        #    raise SystemExit(err)     
+       
+        #a_o =  k[[
+        #    [(4, 5), (1, 0), (9, 8), (12, 13), (17, 16), (20, 21)],
+        #    [(6, 7), (3, 2), (11, 10), (14, 15), (19, 18), (22, 23)]
+        #]]
+        #a_o =  k[[
+        #    [(17, 16), (13, 12), (3, 2), (8, 9), (4, 5), (20, 21)],
+        #    [(0, 1), (6, 7), (11, 10), (14, 15), (19, 18), (22, 23)]
+        #]]
+        a_o = k[
+            [
+                [(0, 1), (2, 3), (4, 5), (6, 7), (8, 9), (10, 11)],
+                [(12, 13), (14, 15), (16, 17), (18, 19), (20, 21), (22, 23)],
+            ]
+        ]
+        #a_o = k[
+        #    [
+        #        [(3, 2), (4, 5), (9, 8), (0, 1), (6, 7), (10, 11)],
+        #        [(12, 13), (14, 15), (16, 17), (18, 19), (20, 21), (22, 23)],
+        #    ]
         #]
 
-        k = self.num_to_raw_binary(raw_data)[f_sc_idx]
+        #print(a_o)
+        #print(a_o[0])
+        #print(a_o[1])
+        ao0 = a_o[0]
+        ao1 = a_o[1]
+        ao0l = [(int(a[0]), int(a[1])) for a in ao0]
+        ao1l = [(int(a[0]), int(a[1])) for a in ao1]
+
+        aljoscha_order = [ao0l, ao1l]
+
+
+        #aljoscha_order = [[(int(a[0]), int(a[1])) for a in a_o[0]], [(int(b[0]), int(b[1])) for b in a_o[1]]]
+
+        
+        if t:
+            #print()
+            #print("k", e_o)
+            #print()
+            a = np.where(np.array(aljoscha_order)==1)
+            #print()
+            #print("m")
+            #print(aljoscha_order)
+            #print(i)
+            #print(a)
+            #print(a[1][1], a[2][1], a[0][1])
+            #print("n")
+            #print()
+            print(aljoscha_order, i, 2*a[1] + a[2] if not a[0] else 2*a[1] + a[2] + 12)
+
+
+        return evan_order, aljoscha_order
+
+        #k = self.num_to_raw_binary(raw_data)[f_sc_idx]
+        k = self.num_to_raw_binary_lsb(raw_data)
+        k = k[::-1]
+        k = k[new_f_sc_idx]
 
         cooked_data = [[(int(k[0]), int(k[1])) for k in k[0]], [(int(k[0]), int(k[1])) for k in k[1]]]
+
+        #print(aljoscha_order)
+        #print(cooked_data)
+        #raise Exception
 
         return cooked_data
     
     def get_scintillator_bounds(self, data):
         raw_data = data
-        cooked_data = self.cook_data_into_scintillators(raw_data)
-        scintillator_bounds = self.detection_algorithm.scintillators_to_bounds(cooked_data)
+        e_order, a_order = self.cook_data_into_scintillators(raw_data)
+        scintillator_bounds = self.detection_algorithm.scintillators_to_bounds(a_order)
 
         if not scintillator_bounds:
             return None, None
-        return scintillator_bounds, cooked_data
+        return scintillator_bounds, a_order
     
 
     def add_point(self, data):

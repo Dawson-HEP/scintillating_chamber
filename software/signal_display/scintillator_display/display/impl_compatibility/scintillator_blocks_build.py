@@ -173,17 +173,21 @@ class ScintillatorBlocks(MathDisplayValues):
         for i, data in enumerate(self.data):
             self.data[i][:, :, 3:7] = [*(self.c2 if i%2 else self.c1), self.alpha]
         
-        #self.data[12][:, :, 3:7]=[0, 0, 0, 1]
+        #self.data[0][:, :, 3:7]=[0, 0, 0, 1]
 
 
     
     def light_scintillators_for_hit(self, point):
-        binary=self.data_manager.num_to_raw_binary(point.int_number)
-        yellow = [1, 1, 1, 0.75]
-        for i, binary_value in enumerate(binary):
-            if binary_value:
-                self.data[i][:, :, 3:7] = yellow
-        
+        #binary=self.data_manager.num_to_raw_binary_lsb(point.int_number)
+        e_order, _ = self.data_manager.cook_data_into_scintillators(point.int_number)
+        #print(e_order)
+        yellow = [1, 1, 0, 0.75]
+        for i, binary_value in enumerate(e_order):
+            if i==0:
+                self.data[i][:, :, 3:7]=[0, 0, 0, 1]
+            #if binary_value:
+            #    self.data[i][:, :, 3:7] = yellow
+
     def data_to_triangles_for_draw(self):
         triangles = []
         for sipm in self.data:

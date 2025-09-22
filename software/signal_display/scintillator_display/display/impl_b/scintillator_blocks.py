@@ -325,7 +325,7 @@ class ScintillatorStructure(MathDisplayValues):
 
     
     def recolour_for_point(self, point):
-        binary=self.data_manager.num_to_raw_binary(point.int_number)
+        binary=self.data_manager.num_to_raw_binary_lsb(point.int_number)
         scintillators = point.scintillator_binary
         #print(type(scintillators))
         #print(type(scintillators[0]))

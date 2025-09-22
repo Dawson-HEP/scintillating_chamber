@@ -64,6 +64,44 @@ class Window(MathDisplayValues):
         self.show_axes = True
 
 
+        lsb_one          = self.data_manager.num_to_raw_binary_lsb(0b000000000000000000000001)
+        lsb_two          = self.data_manager.num_to_raw_binary_lsb(0b000000000000000000000010)
+        lsb_three        = self.data_manager.num_to_raw_binary_lsb(0b000000000000000000000100)
+        lsb_four         = self.data_manager.num_to_raw_binary_lsb(0b000000000000000000001000)
+        lsb_five         = self.data_manager.num_to_raw_binary_lsb(0b000000000000000000010000)
+        lsb_six          = self.data_manager.num_to_raw_binary_lsb(0b000000000000000000100000)
+        lsb_seven        = self.data_manager.num_to_raw_binary_lsb(0b000000000000000001000000)
+        lsb_eight        = self.data_manager.num_to_raw_binary_lsb(0b000000000000000010000000)
+        lsb_nine         = self.data_manager.num_to_raw_binary_lsb(0b000000000000000100000000)
+        lsb_ten          = self.data_manager.num_to_raw_binary_lsb(0b000000000000001000000000)
+        lsb_eleven       = self.data_manager.num_to_raw_binary_lsb(0b000000000000010000000000)
+        lsb_twelve       = self.data_manager.num_to_raw_binary_lsb(0b000000000000100000000000)
+        lsb_thirteen     = self.data_manager.num_to_raw_binary_lsb(0b000000000001000000000000)
+        lsb_fourteen     = self.data_manager.num_to_raw_binary_lsb(0b000000000010000000000000)
+        lsb_fifteen      = self.data_manager.num_to_raw_binary_lsb(0b000000000100000000000000)
+        lsb_sixteen      = self.data_manager.num_to_raw_binary_lsb(0b000000001000000000000000)
+        lsb_seventeen    = self.data_manager.num_to_raw_binary_lsb(0b000000010000000000000000)
+        lsb_eighteen     = self.data_manager.num_to_raw_binary_lsb(0b000000100000000000000000)
+        lsb_nineteen     = self.data_manager.num_to_raw_binary_lsb(0b000001000000000000000000)
+        lsb_twenty       = self.data_manager.num_to_raw_binary_lsb(0b000010000000000000000000)
+        lsb_twenty_one   = self.data_manager.num_to_raw_binary_lsb(0b000100000000000000000000)
+        lsb_twenty_two   = self.data_manager.num_to_raw_binary_lsb(0b001000000000000000000000)
+        lsb_twenty_three = self.data_manager.num_to_raw_binary_lsb(0b010000000000000000000000)
+        lsb_twenty_four  = self.data_manager.num_to_raw_binary_lsb(0b100000000000000000000000)
+        lsb = [lsb_one, lsb_two, lsb_three, lsb_four,
+               lsb_five, lsb_six, lsb_seven, lsb_eight,
+               lsb_nine, lsb_ten, lsb_eleven, lsb_twelve,
+               lsb_thirteen, lsb_fourteen, lsb_fifteen, lsb_sixteen,
+               lsb_seventeen, lsb_eighteen, lsb_nineteen, lsb_twenty,
+               lsb_twenty_one, lsb_twenty_two, lsb_twenty_three, lsb_twenty_four]
+        #idx = 1
+        #print(lsb_one)
+        #print(lsb[0])
+        for i, l in enumerate(lsb):
+            self.data_manager.cook_data_into_scintillators(l, t=True, data_is_binary=True, i=i)
+        #self.data_manager.cook_data_into_scintillators(lsb[idx-1], t=True, data_is_binary=True)
+        import sys
+        sys.exit()
 
         self.point = np.array([60, 60, -81, 1, 1, 1, 1]).astype(np.float32)
         self.p_vao = create_vao(self.point)
@@ -151,6 +189,7 @@ class Window(MathDisplayValues):
 
 
         self.shaders.set_shader(self.normal_shader)
+
 
 
 
