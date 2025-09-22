@@ -39,7 +39,7 @@ f.remove(3)
 
 # k = [random.choice(f) for i in range(3)]
 
-k = [1, 6,9]
+k = [1, 6,305]
 for runNo in k:
     data = digitizer(f'{fileDir}/run{runNo:06}.root', events=None, channels=[i for i in range(17, 27) ], signal_filter='converted')
 

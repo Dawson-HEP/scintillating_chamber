@@ -8,3 +8,4 @@ fp-*
 *.pyc
 *.egg-info
 **/__MACOSX/
+*.root
