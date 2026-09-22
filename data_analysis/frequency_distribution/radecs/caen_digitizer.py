@@ -97,7 +97,7 @@ class digitizer:
             
             # init data arrays
             wave = np.zeros((nEvts, nChannels, len(wave_time))) # waveform in [mV]
-            wave_adc = np.zeros((nEvts, nChannels, len(wave_time))) # waveform in [ADC]
+            wave_adc = np.zeros((nEvts, nChannels, len(wave_time) + 100)) # waveform in [ADC]
             wave_ampl = np.zeros((nEvts, nChannels)) # amplitude in [mV]
             wave_ampl_time = np.zeros((nEvts, nChannels)) # amplitude time in [ns]
             wave_int = np.zeros_like(wave_ampl) # integral in [mV us]
