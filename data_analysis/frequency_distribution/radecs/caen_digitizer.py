@@ -97,6 +97,7 @@ class digitizer:
             
             # init data arrays
             wave = np.zeros((nEvts, nChannels, len(wave_time))) # waveform in [mV]
+            wave_adc = np.zeros((nEvts, nChannels, len(wave_time))) # waveform in [ADC]
             wave_ampl = np.zeros((nEvts, nChannels)) # amplitude in [mV]
             wave_ampl_time = np.zeros((nEvts, nChannels)) # amplitude time in [ns]
             wave_int = np.zeros_like(wave_ampl) # integral in [mV us]
@@ -140,6 +141,9 @@ class digitizer:
                     
                 # signal wave
                 wave[:,ich,:] = wave_filtered
+
+                # ADC wave
+                wave_adc[:, ich, :] = wave_raw
                 
                 # signal amplitude
                 wave_ampl[:,ich] = np.max(wave[:,ich,:], axis=1) # mV
@@ -169,9 +173,10 @@ class digitizer:
         wave_intensity = wave_int * wave_tot/1000 # mV*µs * µs
         
         data = dict() #pd.DataFrame()
-        
+
         data['timestamp'] = time_stamp
         data['waveTime'] = np.broadcast_to(wave_time, wave.shape)
+        data['waveRaw'] = wave_adc
         data['wave'] = wave
         data['amplitude'] = wave_ampl
         data['amplitudeTime'] = wave_ampl_time
